@@ -63,6 +63,11 @@ func (set *Set[T]) Clear() {
 	set.values = map[T]struct{}{}
 }
 
+// Len returns the number of values in the set
+func (set Set[T]) Len() int {
+	return len(set.values)
+}
+
 // Contains returns true if the set contains the value
 func (set Set[T]) Contains(value T) bool {
 	_, ok := set.values[value]
@@ -148,4 +153,17 @@ func IsSubset[T comparable](a Set[T], b Set[T]) bool {
 // IsSuperset returns: A ⊇ B
 func IsSuperset[T comparable](a Set[T], b Set[T]) bool {
 	return IsSubset(b, a)
+}
+
+// Identical returns: (A ⊆ B) & (A ⊇ B)
+func Identical[T comparable](a Set[T], b Set[T]) bool {
+	if a.Len() != b.Len() {
+		return false
+	}
+	for value := range a.values {
+		if !b.Contains(value) {
+			return false
+		}
+	}
+	return true
 }

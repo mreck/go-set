@@ -1,8 +1,30 @@
 package goset
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Set holds the values for a set of type T
 type Set[T comparable] struct {
 	values map[T]struct{}
+}
+
+// String returns the string representation of the set
+func (set Set[T]) String() string {
+	var b strings.Builder
+	first := true
+	b.WriteString("{ ")
+	for value := range set.values {
+		if !first {
+			b.WriteString(", ")
+		} else {
+			first = false
+		}
+		b.WriteString(fmt.Sprintf("%v", value))
+	}
+	b.WriteString(" }")
+	return b.String()
 }
 
 // Add adds a value

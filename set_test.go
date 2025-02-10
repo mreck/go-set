@@ -1,87 +1,71 @@
 package goset
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestDifference(t *testing.T) {
 	a := Create([]int{1, 2, 3, 4, 5, 6})
 	b := Create([]int{2, 4, 6})
-	r := Difference(a, b)
-	if !Identical(r, Create([]int{1, 3, 5})) {
-		t.Error("There's a bug in Difference()")
-	}
+
+	assert.Equal(t, Create([]int{1, 3, 5}), Difference(a, b))
 }
 
 func TestIntersection(t *testing.T) {
 	a := Create([]int{1, 2, 3, 4, 5, 6})
 	b := Create([]int{2, 4, 6, 8, 10})
-	r := Intersection(a, b)
-	if !Identical(r, Create([]int{2, 4, 6})) {
-		t.Error("There's a bug in Intersection()")
-	}
+
+	assert.Equal(t, Create([]int{2, 4, 6}), Intersection(a, b))
 }
 
 func TestSymmetricDifference(t *testing.T) {
 	a := Create([]int{1, 2, 3, 4, 5, 6})
 	b := Create([]int{4, 5, 6, 7, 8, 9})
-	r := SymmetricDifference(a, b)
-	if !Identical(r, Create([]int{1, 2, 3, 7, 8, 9})) {
-		t.Error("There's a bug in SymmetricDifference()")
-	}
+
+	assert.Equal(t, Create([]int{1, 2, 3, 7, 8, 9}), SymmetricDifference(a, b))
 }
 
 func TestUnion(t *testing.T) {
 	a := Create([]int{1, 2, 3, 4, 5, 6})
 	b := Create([]int{4, 5, 6, 7, 8, 9})
-	r := Union(a, b)
-	if !Identical(r, Create([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})) {
-		t.Error("There's a bug in Union()")
-	}
+
+	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}), Union(a, b))
 }
 
 func TestAreDisjoint(t *testing.T) {
 	a := Create([]int{1, 2, 3})
 	b := Create([]int{4, 5, 6})
-	r := AreDisjoint(a, b)
-	if !r {
-		t.Error("There's a bug in AreDisjoint()")
-	}
+
+	assert.True(t, AreDisjoint(a, b))
 
 	a = Create([]int{1, 2, 3})
 	b = Create([]int{3, 4, 5})
-	r = AreDisjoint(a, b)
-	if r {
-		t.Error("There's a bug in AreDisjoint()")
-	}
+
+	assert.False(t, AreDisjoint(a, b))
 }
 
 func TestIsSubset(t *testing.T) {
 	a := Create([]int{1, 2, 3})
 	b := Create([]int{1, 2, 3, 4, 5, 6})
-	r := IsSubset(a, b)
-	if !r {
-		t.Error("There's a bug in IsSubset()")
-	}
+
+	assert.True(t, IsSubset(a, b))
 
 	a = Create([]int{1, 2, 3})
 	b = Create([]int{2, 3, 4, 5, 6})
-	r = IsSubset(a, b)
-	if r {
-		t.Error("There's a bug in IsSubset()")
-	}
+
+	assert.False(t, IsSubset(a, b))
 }
 
 func TestIsSuperset(t *testing.T) {
 	a := Create([]int{1, 2, 3, 4, 5, 6})
 	b := Create([]int{1, 2, 3})
-	r := IsSuperset(a, b)
-	if !r {
-		t.Error("There's a bug in IsSuperset()")
-	}
+
+	assert.True(t, IsSuperset(a, b))
 
 	a = Create([]int{2, 3, 4, 5, 6})
 	b = Create([]int{1, 2, 3})
-	r = IsSuperset(a, b)
-	if r {
-		t.Error("There's a bug in IsSuperset()")
-	}
+
+	assert.False(t, IsSuperset(a, b))
 }

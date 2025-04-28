@@ -1,6 +1,7 @@
 package goset
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -25,6 +26,22 @@ func (set Set[T]) String() string {
 	}
 	b.WriteString(" }")
 	return b.String()
+}
+
+// MarshalJSON implements the Marshaler interface
+func (set Set[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(set.List())
+}
+
+// UnmarshalJSON implements the Unmarshaler interface
+func (set *Set[T]) UnmarshalJSON(b []byte) error {
+	var arr []T
+	err := json.Unmarshal(b, &arr)
+	if err != nil {
+		return err
+	}
+	set.AddMany(arr)
+	return nil
 }
 
 // Add adds a value

@@ -1,10 +1,42 @@
 package goset
 
 import (
+	"encoding/json"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMarshalJSON(t *testing.T) {
+	data := []int{1, 2, 4, 5}
+	input := Create(data)
+
+	b, err := json.Marshal(input)
+	assert.Nil(t, err)
+
+	var output []int
+
+	err = json.Unmarshal(b, &output)
+	assert.Nil(t, err)
+
+	slices.Sort(output)
+	assert.Equal(t, data, output)
+}
+
+func TestUnmarshalJSON(t *testing.T) {
+	data := []int{1, 2, 4, 5}
+
+	b, err := json.Marshal(data)
+	assert.Nil(t, err)
+
+	var output Set[int]
+
+	err = json.Unmarshal(b, &output)
+	assert.Nil(t, err)
+
+	assert.Equal(t, Create(data), output)
+}
 
 func TestDifference(t *testing.T) {
 	var a, b Set[int]

@@ -60,6 +60,25 @@ func Test_IdxSet_JSON(t *testing.T) {
 	}
 }
 
+func Test_IdxSet_Clone(t *testing.T) {
+	testcases := []struct {
+		values []uint64
+	}{
+		{[]uint64{1, 2, 3}},
+		{[]uint64{1, 3, 7}},
+	}
+
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			set := NewIdxSet(NewIdxSetItemUint64Slice(tc.values))
+			clone := set.Clone()
+			assert.Equal(t, set, clone)
+			assert.NotSame(t, &set, &clone)
+			assert.NotSame(t, &set.items, &clone.items)
+		})
+	}
+}
+
 func Test_IdxSet_Add(t *testing.T) {
 	var iset IdxSet[IdxSetItemUint64]
 	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)

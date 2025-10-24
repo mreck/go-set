@@ -35,6 +35,20 @@ func (s IdxSet[T]) Clone() IdxSet[T] {
 	return clone
 }
 
+// Values returns the non-nil values in the set.
+// The values are sorted by ascending index.
+func (s IdxSet[T]) Values() []T {
+	var values []T
+
+	for _, it := range s.items {
+		if !it.IsNil() {
+			values = append(values, it)
+		}
+	}
+
+	return values
+}
+
 // MarshalJSON implements the Marshaler interface.
 func (set IdxSet[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(set.items)

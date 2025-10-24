@@ -84,6 +84,25 @@ func Test_IdxSet_Clone(t *testing.T) {
 	}
 }
 
+func Test_IdxSet_Values(t *testing.T) {
+	testcases := []struct {
+		values []uint64
+	}{
+		{nil},
+		{[]uint64{1, 2, 3}},
+		{[]uint64{1, 3, 7}},
+	}
+
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			values := NewIdxSetItemUint64Slice(tc.values)
+			set := NewIdxSet(values)
+			export := set.Values()
+			assert.Equal(t, values, export)
+		})
+	}
+}
+
 func Test_IdxSet_Add(t *testing.T) {
 	testcases := []struct {
 		item   uint64

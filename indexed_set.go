@@ -1,9 +1,5 @@
 package goset
 
-type IndexedSetItem interface {
-	Index() uint64
-}
-
 type IndexedSet[T IndexedSetItem] struct {
 	maxIndex uint64
 	values   []T

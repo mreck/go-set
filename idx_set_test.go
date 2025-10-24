@@ -2,21 +2,37 @@ package goset
 
 import (
 	"encoding/json"
-	"strconv"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_NewIdxSet(t *testing.T) {
-	iset := NewIdxSet[IdxSetItemUint64](nil)
-	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
+	testCases := []struct {
+		items  []IdxSetItemUint64
+		expect []IdxSetItemUint64
+	}{
+		{
+			items:  nil,
+			expect: []IdxSetItemUint64(nil),
+		},
+		{
+			items:  []IdxSetItemUint64{},
+			expect: []IdxSetItemUint64(nil),
+		},
+		{
+			items:  []IdxSetItemUint64{1, 2, 4, 7},
+			expect: []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7},
+		},
+	}
 
-	iset = NewIdxSet([]IdxSetItemUint64{})
-	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
-
-	iset = NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
+	for i, tc := range testCases {
+		t.Run(fmt.Sprintf("cast:%d", i), func(t *testing.T) {
+			iset := NewIdxSet(tc.items)
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_JSON(t *testing.T) {
@@ -28,7 +44,7 @@ func Test_IdxSet_JSON(t *testing.T) {
 	}
 
 	for i, tc := range testcases {
-		t.Run(strconv.FormatInt(int64(i), 10), func(t *testing.T) {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
 			var items []IdxSetItemUint64
 			for _, v := range tc {
 				items = append(items, IdxSetItemUint64(v))
@@ -117,13 +133,23 @@ func Test_IdxSet_GetAt(t *testing.T) {
 	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
 	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	assert.Equal(t, IdxSetItemUint64(1), iset.GetAt(0))
-	assert.Equal(t, IdxSetItemUint64(2), iset.GetAt(1))
-	assert.Equal(t, IdxSetItemUint64(0), iset.GetAt(2))
-	assert.Equal(t, IdxSetItemUint64(4), iset.GetAt(3))
-	assert.Equal(t, IdxSetItemUint64(0), iset.GetAt(4))
-	assert.Equal(t, IdxSetItemUint64(0), iset.GetAt(5))
-	assert.Equal(t, IdxSetItemUint64(7), iset.GetAt(6))
-	assert.Equal(t, IdxSetItemUint64(0), iset.GetAt(7))
-	assert.Equal(t, IdxSetItemUint64(0), iset.GetAt(8))
+	testcases := []struct {
+		index  uint64
+		expect uint64
+	}{
+		{0, 1},
+		{1, 2},
+		{2, 0},
+		{3, 4},
+		{4, 0},
+		{5, 0},
+		{6, 7},
+		{7, 0},
+		{8, 0},
+	}
+	for _, tc := range testcases {
+		t.Run(fmt.Sprintf("index:%d", tc.index), func(t *testing.T) {
+			assert.Equal(t, IdxSetItemUint64(tc.expect), iset.GetAt(tc.index))
+		})
+	}
 }

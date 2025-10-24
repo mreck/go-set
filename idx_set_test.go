@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	testIdxSetEmpty = NewIdxSet([]IdxSetItemUint64(nil))
+	testIdxSet1247  = NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
+)
+
 func Test_NewIdxSet(t *testing.T) {
 	testcases := []struct {
 		items  []uint64
@@ -80,9 +85,6 @@ func Test_IdxSet_Clone(t *testing.T) {
 }
 
 func Test_IdxSet_Add(t *testing.T) {
-	var iset IdxSet[IdxSetItemUint64]
-	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
-
 	testcases := []struct {
 		item   uint64
 		expect []IdxSetItemUint64
@@ -93,6 +95,8 @@ func Test_IdxSet_Add(t *testing.T) {
 		{7, []IdxSetItemUint64{0, 2, 3, 0, 0, 0, 7}},
 	}
 
+	iset := testIdxSetEmpty.Clone()
+
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
 			iset.Add(IdxSetItemUint64(tc.item))
@@ -102,9 +106,6 @@ func Test_IdxSet_Add(t *testing.T) {
 }
 
 func Test_IdxSet_AddMany(t *testing.T) {
-	var iset IdxSet[IdxSetItemUint64]
-	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
-
 	testcases := []struct {
 		items  []uint64
 		expect []IdxSetItemUint64
@@ -114,6 +115,8 @@ func Test_IdxSet_AddMany(t *testing.T) {
 		{[]uint64{7, 3}, []IdxSetItemUint64{1, 0, 3, 0, 5, 0, 7}},
 		{[]uint64{1, 2}, []IdxSetItemUint64{1, 2, 3, 0, 5, 0, 7}},
 	}
+
+	iset := testIdxSetEmpty.Clone()
 
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
@@ -125,9 +128,6 @@ func Test_IdxSet_AddMany(t *testing.T) {
 }
 
 func Test_IdxSet_Remove(t *testing.T) {
-	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
-
 	testcases := []struct {
 		item   uint64
 		expect []IdxSetItemUint64
@@ -135,6 +135,8 @@ func Test_IdxSet_Remove(t *testing.T) {
 		{1, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
 		{9, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
 	}
+
+	iset := testIdxSet1247.Clone()
 
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
@@ -145,9 +147,6 @@ func Test_IdxSet_Remove(t *testing.T) {
 }
 
 func Test_IdxSet_RemoveMany(t *testing.T) {
-	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
-
 	testcases := []struct {
 		items  []uint64
 		expect []IdxSetItemUint64
@@ -157,6 +156,8 @@ func Test_IdxSet_RemoveMany(t *testing.T) {
 		{[]uint64{7, 7}, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 0}},
 		{[]uint64{4, 1}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 0}},
 	}
+
+	iset := testIdxSet1247.Clone()
 
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
@@ -168,9 +169,6 @@ func Test_IdxSet_RemoveMany(t *testing.T) {
 }
 
 func Test_IdxSet_RemoveIndex(t *testing.T) {
-	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
-
 	testcases := []struct {
 		index  uint64
 		expect []IdxSetItemUint64
@@ -181,6 +179,8 @@ func Test_IdxSet_RemoveIndex(t *testing.T) {
 		{1, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 7}},
 	}
 
+	iset := testIdxSet1247.Clone()
+
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
 			iset.RemoveIndex(tc.index)
@@ -190,9 +190,6 @@ func Test_IdxSet_RemoveIndex(t *testing.T) {
 }
 
 func Test_IdxSet_RemoveManyIndexes(t *testing.T) {
-	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
-
 	testcases := []struct {
 		indexes []uint64
 		expect  []IdxSetItemUint64
@@ -204,6 +201,8 @@ func Test_IdxSet_RemoveManyIndexes(t *testing.T) {
 		{[]uint64{9, 6}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 0}},
 	}
 
+	iset := testIdxSet1247.Clone()
+
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
 			iset.RemoveManyIndexes(tc.indexes)
@@ -213,9 +212,6 @@ func Test_IdxSet_RemoveManyIndexes(t *testing.T) {
 }
 
 func Test_IdxSet_GetAt(t *testing.T) {
-	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
-
 	testcases := []struct {
 		index  uint64
 		expect uint64
@@ -230,6 +226,9 @@ func Test_IdxSet_GetAt(t *testing.T) {
 		{7, 0},
 		{8, 0},
 	}
+
+	iset := testIdxSet1247.Clone()
+
 	for _, tc := range testcases {
 		t.Run(fmt.Sprintf("index:%d", tc.index), func(t *testing.T) {
 			assert.Equal(t, IdxSetItemUint64(tc.expect), iset.GetAt(tc.index))

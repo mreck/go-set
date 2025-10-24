@@ -16,7 +16,7 @@ func Test_NewIndexedSet(t *testing.T) {
 	assert.Equal(t, []IndexedSetItemUint64(nil), iset.items)
 
 	iset = NewIndexedSet([]IndexedSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IndexedSetItemUint64{0, 1, 2, 0, 4, 0, 0, 7}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 }
 
 func Test_IndexedSet_JSON(t *testing.T) {
@@ -52,34 +52,34 @@ func Test_IndexedSet_Add(t *testing.T) {
 	assert.Equal(t, []IndexedSetItemUint64(nil), iset.items)
 
 	iset.Add(IndexedSetItemUint64(3))
-	assert.Equal(t, []IndexedSetItemUint64{0, 0, 0, 3}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{0, 0, 3}, iset.items)
 
 	iset.Add(IndexedSetItemUint64(2))
-	assert.Equal(t, []IndexedSetItemUint64{0, 0, 2, 3}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{0, 2, 3}, iset.items)
 }
 
 func Test_IndexedSet_Remove(t *testing.T) {
 	iset := NewIndexedSet([]IndexedSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IndexedSetItemUint64{0, 1, 2, 0, 4, 0, 0, 7}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	iset.Remove(1)
-	assert.Equal(t, []IndexedSetItemUint64{0, 0, 2, 0, 4, 0, 0, 7}, iset.items)
+	iset.Remove(IndexedSetItemUint64(1).Index())
+	assert.Equal(t, []IndexedSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
 
 	iset.Remove(9)
-	assert.Equal(t, []IndexedSetItemUint64{0, 0, 2, 0, 4, 0, 0, 7}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
 }
 
 func Test_IndexedSet_Get(t *testing.T) {
 	iset := NewIndexedSet([]IndexedSetItemUint64{1, 2, 4, 7})
-	assert.Equal(t, []IndexedSetItemUint64{0, 1, 2, 0, 4, 0, 0, 7}, iset.items)
+	assert.Equal(t, []IndexedSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(0))
-	assert.Equal(t, IndexedSetItemUint64(1), iset.Get(1))
-	assert.Equal(t, IndexedSetItemUint64(2), iset.Get(2))
-	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(3))
-	assert.Equal(t, IndexedSetItemUint64(4), iset.Get(4))
+	assert.Equal(t, IndexedSetItemUint64(1), iset.Get(0))
+	assert.Equal(t, IndexedSetItemUint64(2), iset.Get(1))
+	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(2))
+	assert.Equal(t, IndexedSetItemUint64(4), iset.Get(3))
+	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(4))
 	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(5))
-	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(6))
-	assert.Equal(t, IndexedSetItemUint64(7), iset.Get(7))
+	assert.Equal(t, IndexedSetItemUint64(7), iset.Get(6))
+	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(7))
 	assert.Equal(t, IndexedSetItemUint64(0), iset.Get(8))
 }

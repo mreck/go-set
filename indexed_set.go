@@ -52,6 +52,9 @@ func (set *IndexedSet[T]) UnmarshalJSON(b []byte) error {
 
 	if len(items) > 0 {
 		for _, it := range items {
+			if it.IsNil() {
+				continue
+			}
 			idx := it.Index()
 			if idx > maxIndex {
 				maxIndex = idx
@@ -80,6 +83,8 @@ func (s *IndexedSet[T]) Add(item T) {
 	s.items[item.Index()] = item
 }
 
+// @TODO: AddMany()
+
 func (s *IndexedSet[T]) Remove(index uint64) {
 	if index > s.maxIndex {
 		return
@@ -87,6 +92,8 @@ func (s *IndexedSet[T]) Remove(index uint64) {
 	var item T
 	s.items[index] = item
 }
+
+// @TODO: RemoveMany()
 
 func (s *IndexedSet[T]) Get(index uint64) T {
 	if index > s.maxIndex {

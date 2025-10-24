@@ -138,7 +138,7 @@ func (s *IdxSet[T]) GetAt(idx uint64) T {
 }
 
 func (s *IdxSet[T]) maybeGrow(maxIdx uint64) {
-	if maxIdx > s.maxIdx {
+	if len(s.items) == 0 || maxIdx > s.maxIdx {
 		newItems := make([]T, maxIdx+1)
 		copy(newItems, s.items)
 

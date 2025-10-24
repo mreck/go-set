@@ -89,10 +89,11 @@ func Test_IdxSet_Add(t *testing.T) {
 		item   uint64
 		expect []IdxSetItemUint64
 	}{
-		{3, []IdxSetItemUint64{0, 0, 3}},
-		{2, []IdxSetItemUint64{0, 2, 3}},
-		{3, []IdxSetItemUint64{0, 2, 3}},
-		{7, []IdxSetItemUint64{0, 2, 3, 0, 0, 0, 7}},
+		{1, []IdxSetItemUint64{1}},
+		{3, []IdxSetItemUint64{1, 0, 3}},
+		{2, []IdxSetItemUint64{1, 2, 3}},
+		{3, []IdxSetItemUint64{1, 2, 3}},
+		{7, []IdxSetItemUint64{1, 2, 3, 0, 0, 0, 7}},
 	}
 
 	iset := testIdxSetEmpty.Clone()

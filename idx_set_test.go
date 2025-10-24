@@ -9,27 +9,28 @@ import (
 )
 
 func Test_NewIdxSet(t *testing.T) {
-	testCases := []struct {
-		items  []IdxSetItemUint64
+	testcases := []struct {
+		items  []uint64
 		expect []IdxSetItemUint64
 	}{
 		{
-			items:  nil,
-			expect: []IdxSetItemUint64(nil),
+			nil,
+			[]IdxSetItemUint64(nil),
 		},
 		{
-			items:  []IdxSetItemUint64{},
-			expect: []IdxSetItemUint64(nil),
+			[]uint64{},
+			[]IdxSetItemUint64(nil),
 		},
 		{
-			items:  []IdxSetItemUint64{1, 2, 4, 7},
-			expect: []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7},
+			[]uint64{1, 2, 4, 7},
+			[]IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7},
 		},
 	}
 
-	for i, tc := range testCases {
+	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("cast:%d", i), func(t *testing.T) {
-			iset := NewIdxSet(tc.items)
+			items := NewIdxSetItemUint64Slice(tc.items)
+			iset := NewIdxSet(items)
 			assert.Equal(t, tc.expect, iset.items)
 		})
 	}
@@ -37,7 +38,7 @@ func Test_NewIdxSet(t *testing.T) {
 
 func Test_IdxSet_JSON(t *testing.T) {
 	testcases := [][]uint64{
-		[]uint64(nil),
+		nil,
 		{},
 		{1, 2, 3},
 		{1, 3, 7},
@@ -45,11 +46,7 @@ func Test_IdxSet_JSON(t *testing.T) {
 
 	for i, tc := range testcases {
 		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
-			var items []IdxSetItemUint64
-			for _, v := range tc {
-				items = append(items, IdxSetItemUint64(v))
-			}
-
+			items := NewIdxSetItemUint64Slice(tc)
 			set := NewIdxSet(items)
 
 			b, err := json.Marshal(set)
@@ -67,66 +64,133 @@ func Test_IdxSet_Add(t *testing.T) {
 	var iset IdxSet[IdxSetItemUint64]
 	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
 
-	iset.Add(IdxSetItemUint64(3))
-	assert.Equal(t, []IdxSetItemUint64{0, 0, 3}, iset.items)
+	testcases := []struct {
+		item   uint64
+		expect []IdxSetItemUint64
+	}{
+		{3, []IdxSetItemUint64{0, 0, 3}},
+		{2, []IdxSetItemUint64{0, 2, 3}},
+		{3, []IdxSetItemUint64{0, 2, 3}},
+		{7, []IdxSetItemUint64{0, 2, 3, 0, 0, 0, 7}},
+	}
 
-	iset.Add(IdxSetItemUint64(2))
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 3}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			iset.Add(IdxSetItemUint64(tc.item))
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_AddMany(t *testing.T) {
 	var iset IdxSet[IdxSetItemUint64]
 	assert.Equal(t, []IdxSetItemUint64(nil), iset.items)
 
-	iset.AddMany([]IdxSetItemUint64{3, 1})
-	assert.Equal(t, []IdxSetItemUint64{1, 0, 3}, iset.items)
+	testcases := []struct {
+		items  []uint64
+		expect []IdxSetItemUint64
+	}{
+		{[]uint64{3, 1}, []IdxSetItemUint64{1, 0, 3}},
+		{[]uint64{7, 5}, []IdxSetItemUint64{1, 0, 3, 0, 5, 0, 7}},
+		{[]uint64{7, 3}, []IdxSetItemUint64{1, 0, 3, 0, 5, 0, 7}},
+		{[]uint64{1, 2}, []IdxSetItemUint64{1, 2, 3, 0, 5, 0, 7}},
+	}
 
-	iset.AddMany([]IdxSetItemUint64{7, 5})
-	assert.Equal(t, []IdxSetItemUint64{1, 0, 3, 0, 5, 0, 7}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			items := NewIdxSetItemUint64Slice(tc.items)
+			iset.AddMany(items)
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_Remove(t *testing.T) {
 	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
 	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	iset.Remove(IdxSetItemUint64(1))
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
+	testcases := []struct {
+		item   uint64
+		expect []IdxSetItemUint64
+	}{
+		{1, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
+		{9, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
+	}
 
-	iset.Remove(IdxSetItemUint64(9))
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			iset.Remove(IdxSetItemUint64(tc.item))
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_RemoveMany(t *testing.T) {
 	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
 	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	iset.RemoveMany([]IdxSetItemUint64{1, 2})
-	assert.Equal(t, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 7}, iset.items)
+	testcases := []struct {
+		items  []uint64
+		expect []IdxSetItemUint64
+	}{
+		{[]uint64{1, 2}, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 7}},
+		{[]uint64{9, 7}, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 0}},
+		{[]uint64{7, 7}, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 0}},
+		{[]uint64{4, 1}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 0}},
+	}
 
-	iset.RemoveMany([]IdxSetItemUint64{9, 7, 7})
-	assert.Equal(t, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 0}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			items := NewIdxSetItemUint64Slice(tc.items)
+			iset.RemoveMany(items)
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_RemoveIndex(t *testing.T) {
 	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
 	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	iset.RemoveIndex(IdxSetItemUint64(1).Index())
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
+	testcases := []struct {
+		index  uint64
+		expect []IdxSetItemUint64
+	}{
+		{0, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
+		{9, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}},
+		{1, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 7}},
+		{1, []IdxSetItemUint64{0, 0, 0, 4, 0, 0, 7}},
+	}
 
-	iset.RemoveIndex(9)
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 4, 0, 0, 7}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			iset.RemoveIndex(tc.index)
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_RemoveManyIndexes(t *testing.T) {
 	iset := NewIdxSet([]IdxSetItemUint64{1, 2, 4, 7})
 	assert.Equal(t, []IdxSetItemUint64{1, 2, 0, 4, 0, 0, 7}, iset.items)
 
-	iset.RemoveManyIndexes([]uint64{0, 3})
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 0, 0, 0, 7}, iset.items)
+	testcases := []struct {
+		indexes []uint64
+		expect  []IdxSetItemUint64
+	}{
+		{[]uint64{0, 3}, []IdxSetItemUint64{0, 2, 0, 0, 0, 0, 7}},
+		{[]uint64{3, 0}, []IdxSetItemUint64{0, 2, 0, 0, 0, 0, 7}},
+		{[]uint64{1, 1}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 7}},
+		{[]uint64{9, 9}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 7}},
+		{[]uint64{9, 6}, []IdxSetItemUint64{0, 0, 0, 0, 0, 0, 0}},
+	}
 
-	iset.RemoveManyIndexes([]uint64{9, 8, 6})
-	assert.Equal(t, []IdxSetItemUint64{0, 2, 0, 0, 0, 0, 0}, iset.items)
+	for i, tc := range testcases {
+		t.Run(fmt.Sprintf("case:%d", i), func(t *testing.T) {
+			iset.RemoveManyIndexes(tc.indexes)
+			assert.Equal(t, tc.expect, iset.items)
+		})
+	}
 }
 
 func Test_IdxSet_GetAt(t *testing.T) {

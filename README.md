@@ -1,3 +1,3 @@
 # Go-Set
 
-A simple set implementation in Go.
+Two simple set implementations in Go.

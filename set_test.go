@@ -10,7 +10,7 @@ import (
 
 func TestMarshalJSON(t *testing.T) {
 	data := []int{1, 2, 4, 5}
-	input := Create(data)
+	input := New(data)
 
 	b, err := json.Marshal(input)
 	assert.Nil(t, err)
@@ -35,7 +35,7 @@ func TestUnmarshalJSON(t *testing.T) {
 	err = json.Unmarshal(b, &output)
 	assert.Nil(t, err)
 
-	assert.Equal(t, Create(data), output)
+	assert.Equal(t, New(data), output)
 }
 
 func TestRange(t *testing.T) {
@@ -47,7 +47,7 @@ func TestRange(t *testing.T) {
 	assert.Nil(t, collected)
 
 	data := []int{1, 2, 3, 4, 5}
-	a := Create(data)
+	a := New(data)
 
 	collected = nil
 	for v := range a.Range() {
@@ -68,97 +68,97 @@ func TestRange(t *testing.T) {
 
 func TestNewFromSeq(t *testing.T) {
 	data := []int{1, 2, 4, 5}
-	assert.Equal(t, Create(data), NewFromSeq(slices.Values(data)))
-	assert.Equal(t, Create([]int(nil)), NewFromSeq(slices.Values([]int(nil))))
+	assert.Equal(t, New(data), NewFromSeq(slices.Values(data)))
+	assert.Equal(t, New([]int(nil)), NewFromSeq(slices.Values([]int(nil))))
 }
 
 func TestDifference(t *testing.T) {
 	var a, b Set[int]
 
-	assert.Equal(t, Create([]int(nil)), Difference(a, b))
-	assert.Equal(t, Create([]int(nil)), Difference(b, a))
+	assert.Equal(t, New([]int(nil)), Difference(a, b))
+	assert.Equal(t, New([]int(nil)), Difference(b, a))
 
-	a = Create([]int{1, 2, 3, 4, 5, 6})
+	a = New([]int{1, 2, 3, 4, 5, 6})
 
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6}), Difference(a, b))
-	assert.Equal(t, Create([]int(nil)), Difference(b, a))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6}), Difference(a, b))
+	assert.Equal(t, New([]int(nil)), Difference(b, a))
 
-	b = Create([]int{2, 4, 6})
+	b = New([]int{2, 4, 6})
 
-	assert.Equal(t, Create([]int{1, 3, 5}), Difference(a, b))
-	assert.Equal(t, Create([]int(nil)), Difference(b, a))
+	assert.Equal(t, New([]int{1, 3, 5}), Difference(a, b))
+	assert.Equal(t, New([]int(nil)), Difference(b, a))
 }
 
 func TestIntersection(t *testing.T) {
 	var a, b Set[int]
 
-	assert.Equal(t, Create([]int(nil)), Intersection(a, b))
-	assert.Equal(t, Create([]int(nil)), Intersection(b, a))
+	assert.Equal(t, New([]int(nil)), Intersection(a, b))
+	assert.Equal(t, New([]int(nil)), Intersection(b, a))
 
-	a = Create([]int{1, 2, 3, 4, 5, 6})
+	a = New([]int{1, 2, 3, 4, 5, 6})
 
-	assert.Equal(t, Create([]int(nil)), Intersection(a, b))
-	assert.Equal(t, Create([]int(nil)), Intersection(b, a))
+	assert.Equal(t, New([]int(nil)), Intersection(a, b))
+	assert.Equal(t, New([]int(nil)), Intersection(b, a))
 
-	b = Create([]int{2, 4, 6, 8, 10})
+	b = New([]int{2, 4, 6, 8, 10})
 
-	assert.Equal(t, Create([]int{2, 4, 6}), Intersection(a, b))
-	assert.Equal(t, Create([]int{2, 4, 6}), Intersection(b, a))
+	assert.Equal(t, New([]int{2, 4, 6}), Intersection(a, b))
+	assert.Equal(t, New([]int{2, 4, 6}), Intersection(b, a))
 }
 
 func TestSymmetricDifference(t *testing.T) {
 	var a, b Set[int]
 
-	assert.Equal(t, Create([]int(nil)), SymmetricDifference(a, b))
-	assert.Equal(t, Create([]int(nil)), SymmetricDifference(b, a))
+	assert.Equal(t, New([]int(nil)), SymmetricDifference(a, b))
+	assert.Equal(t, New([]int(nil)), SymmetricDifference(b, a))
 
-	a = Create([]int{1, 2, 3, 4, 5, 6})
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6}), SymmetricDifference(a, b))
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6}), SymmetricDifference(b, a))
+	a = New([]int{1, 2, 3, 4, 5, 6})
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6}), SymmetricDifference(a, b))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6}), SymmetricDifference(b, a))
 
-	b = Create([]int{4, 5, 6, 7, 8, 9})
+	b = New([]int{4, 5, 6, 7, 8, 9})
 
-	assert.Equal(t, Create([]int{1, 2, 3, 7, 8, 9}), SymmetricDifference(a, b))
-	assert.Equal(t, Create([]int{1, 2, 3, 7, 8, 9}), SymmetricDifference(b, a))
+	assert.Equal(t, New([]int{1, 2, 3, 7, 8, 9}), SymmetricDifference(a, b))
+	assert.Equal(t, New([]int{1, 2, 3, 7, 8, 9}), SymmetricDifference(b, a))
 }
 
 func TestUnion(t *testing.T) {
 	var a, b Set[int]
 
-	assert.Equal(t, Create([]int(nil)), Union(a, b))
-	assert.Equal(t, Create([]int(nil)), Union(b, a))
+	assert.Equal(t, New([]int(nil)), Union(a, b))
+	assert.Equal(t, New([]int(nil)), Union(b, a))
 
-	a = Create([]int{1, 2, 3, 4, 5, 6})
+	a = New([]int{1, 2, 3, 4, 5, 6})
 
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6}), Union(a, b))
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6}), Union(b, a))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6}), Union(a, b))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6}), Union(b, a))
 
-	b = Create([]int{4, 5, 6, 7, 8, 9})
+	b = New([]int{4, 5, 6, 7, 8, 9})
 
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}), Union(a, b))
-	assert.Equal(t, Create([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}), Union(b, a))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}), Union(a, b))
+	assert.Equal(t, New([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}), Union(b, a))
 }
 
-func TestAreDisjoint(t *testing.T) {
+func TestIsDisjoint(t *testing.T) {
 	var a, b Set[int]
 
-	assert.True(t, AreDisjoint(a, b))
-	assert.True(t, AreDisjoint(b, a))
+	assert.True(t, IsDisjoint(a, b))
+	assert.True(t, IsDisjoint(b, a))
 
-	a = Create([]int{1, 2, 3})
+	a = New([]int{1, 2, 3})
 
-	assert.True(t, AreDisjoint(a, b))
-	assert.True(t, AreDisjoint(b, a))
+	assert.True(t, IsDisjoint(a, b))
+	assert.True(t, IsDisjoint(b, a))
 
-	b = Create([]int{4, 5, 6})
+	b = New([]int{4, 5, 6})
 
-	assert.True(t, AreDisjoint(a, b))
-	assert.True(t, AreDisjoint(b, a))
+	assert.True(t, IsDisjoint(a, b))
+	assert.True(t, IsDisjoint(b, a))
 
-	b = Create([]int{3, 4, 5})
+	b = New([]int{3, 4, 5})
 
-	assert.False(t, AreDisjoint(a, b))
-	assert.False(t, AreDisjoint(b, a))
+	assert.False(t, IsDisjoint(a, b))
+	assert.False(t, IsDisjoint(b, a))
 }
 
 func TestIsSubset(t *testing.T) {
@@ -167,17 +167,17 @@ func TestIsSubset(t *testing.T) {
 	assert.True(t, IsSubset(a, b))
 	assert.True(t, IsSubset(b, a))
 
-	a = Create([]int{1, 2, 3})
+	a = New([]int{1, 2, 3})
 
 	assert.False(t, IsSubset(a, b))
 	assert.True(t, IsSubset(b, a))
 
-	b = Create([]int{1, 2, 3, 4, 5, 6})
+	b = New([]int{1, 2, 3, 4, 5, 6})
 
 	assert.True(t, IsSubset(a, b))
 	assert.False(t, IsSubset(b, a))
 
-	b = Create([]int{2, 3, 4, 5, 6})
+	b = New([]int{2, 3, 4, 5, 6})
 
 	assert.False(t, IsSubset(a, b))
 	assert.False(t, IsSubset(b, a))
@@ -189,17 +189,17 @@ func TestIsSuperset(t *testing.T) {
 	assert.True(t, IsSuperset(a, b))
 	assert.True(t, IsSuperset(b, a))
 
-	a = Create([]int{1, 2, 3})
+	a = New([]int{1, 2, 3})
 
 	assert.True(t, IsSuperset(a, b))
 	assert.False(t, IsSuperset(b, a))
 
-	b = Create([]int{1, 2, 3, 4, 5, 6})
+	b = New([]int{1, 2, 3, 4, 5, 6})
 
 	assert.True(t, IsSuperset(b, a))
 	assert.False(t, IsSuperset(a, b))
 
-	b = Create([]int{1, 2, 3, 4, 5, 6, 7, 8})
+	b = New([]int{1, 2, 3, 4, 5, 6, 7, 8})
 
 	assert.False(t, IsSuperset(a, b))
 	assert.True(t, IsSuperset(b, a))

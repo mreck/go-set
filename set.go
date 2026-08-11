@@ -190,9 +190,9 @@ func (set Set[T]) Union(other Set[T]) Set[T] {
 	return Union(set, other)
 }
 
-// AreDisjoint returns: set ∩ other = 0
-func (set Set[T]) AreDisjoint(other Set[T]) bool {
-	return AreDisjoint(set, other)
+// IsDisjoint returns: set ∩ other = 0
+func (set Set[T]) IsDisjoint(other Set[T]) bool {
+	return IsDisjoint(set, other)
 }
 
 // IsSubset returns: set ⊆ other
@@ -205,13 +205,13 @@ func (set Set[T]) IsSuperset(other Set[T]) bool {
 	return IsSuperset(set, other)
 }
 
-// Identical returns: (set ⊆ other) & (set ⊇ other)
-func (set Set[T]) Identical(other Set[T]) bool {
-	return Identical(set, other)
+// Equal returns: (set ⊆ other) & (set ⊇ other)
+func (set Set[T]) Equal(other Set[T]) bool {
+	return Equal(set, other)
 }
 
-// Create returns a new Set based on the list
-func Create[T comparable](list []T) Set[T] {
+// New returns a new Set based on the list
+func New[T comparable](list []T) Set[T] {
 	var set Set[T]
 	if list != nil {
 		set.AddMany(list)
@@ -254,8 +254,8 @@ func Union[T comparable](a Set[T], b Set[T]) Set[T] {
 	return result
 }
 
-// AreDisjoint returns: A ∩ B = 0
-func AreDisjoint[T comparable](a Set[T], b Set[T]) bool {
+// IsDisjoint returns: A ∩ B = 0
+func IsDisjoint[T comparable](a Set[T], b Set[T]) bool {
 	for value := range a.values {
 		if b.Contains(value) {
 			return false
@@ -284,8 +284,8 @@ func IsSuperset[T comparable](a Set[T], b Set[T]) bool {
 	return IsSubset(b, a)
 }
 
-// Identical returns: (A ⊆ B) & (A ⊇ B)
-func Identical[T comparable](a Set[T], b Set[T]) bool {
+// Equal returns: (A ⊆ B) & (A ⊇ B)
+func Equal[T comparable](a Set[T], b Set[T]) bool {
 	if a.Len() != b.Len() {
 		return false
 	}

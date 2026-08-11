@@ -22,7 +22,7 @@ func (set Set[T]) String() string {
 		} else {
 			first = false
 		}
-		b.WriteString(fmt.Sprintf("%v", value))
+		fmt.Fprintf(&b, "%v", value)
 	}
 	b.WriteString(" }")
 	return b.String()
@@ -30,7 +30,11 @@ func (set Set[T]) String() string {
 
 // MarshalJSON implements the Marshaler interface
 func (set Set[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(set.List())
+	list := set.List()
+	if list == nil {
+		list = []T{}
+	}
+	return json.Marshal(list)
 }
 
 // UnmarshalJSON implements the Unmarshaler interface
@@ -40,6 +44,7 @@ func (set *Set[T]) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
+	set.Clear()
 	set.AddMany(arr)
 	return nil
 }
@@ -65,7 +70,7 @@ func (set *Set[T]) AddMany(values []T) {
 	}
 }
 
-// AddMany adds multiple values
+// AddSet adds the values of another set
 func (set *Set[T]) AddSet(otherSet Set[T]) {
 	if otherSet.values == nil {
 		return
@@ -135,6 +140,13 @@ func (set Set[T]) List() []T {
 		list = append(list, value)
 	}
 	return list
+}
+
+// Clone returns a copy of the set
+func (set Set[T]) Clone() Set[T] {
+	var clone Set[T]
+	clone.AddSet(set)
+	return clone
 }
 
 // Create returns a new Set based on the list

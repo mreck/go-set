@@ -149,6 +149,46 @@ func (set Set[T]) Clone() Set[T] {
 	return clone
 }
 
+// Difference returns: set \ other
+func (set Set[T]) Difference(other Set[T]) Set[T] {
+	return Difference(set, other)
+}
+
+// Intersection returns: set ∩ other
+func (set Set[T]) Intersection(other Set[T]) Set[T] {
+	return Intersection(set, other)
+}
+
+// SymmetricDifference returns: (set \ other) ∪ (other \ set)
+func (set Set[T]) SymmetricDifference(other Set[T]) Set[T] {
+	return SymmetricDifference(set, other)
+}
+
+// Union returns: set ∪ other
+func (set Set[T]) Union(other Set[T]) Set[T] {
+	return Union(set, other)
+}
+
+// AreDisjoint returns: set ∩ other = 0
+func (set Set[T]) AreDisjoint(other Set[T]) bool {
+	return AreDisjoint(set, other)
+}
+
+// IsSubset returns: set ⊆ other
+func (set Set[T]) IsSubset(other Set[T]) bool {
+	return IsSubset(set, other)
+}
+
+// IsSuperset returns: set ⊇ other
+func (set Set[T]) IsSuperset(other Set[T]) bool {
+	return IsSuperset(set, other)
+}
+
+// Identical returns: (set ⊆ other) & (set ⊇ other)
+func (set Set[T]) Identical(other Set[T]) bool {
+	return Identical(set, other)
+}
+
 // Create returns a new Set based on the list
 func Create[T comparable](list []T) Set[T] {
 	var set Set[T]

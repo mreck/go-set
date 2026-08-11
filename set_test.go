@@ -38,6 +38,40 @@ func TestUnmarshalJSON(t *testing.T) {
 	assert.Equal(t, Create(data), output)
 }
 
+func TestRange(t *testing.T) {
+	var empty Set[int]
+	var collected []int
+	for v := range empty.Range() {
+		collected = append(collected, v)
+	}
+	assert.Nil(t, collected)
+
+	data := []int{1, 2, 3, 4, 5}
+	a := Create(data)
+
+	collected = nil
+	for v := range a.Range() {
+		collected = append(collected, v)
+	}
+	slices.Sort(collected)
+	assert.Equal(t, data, collected)
+
+	count := 0
+	for range a.Range() {
+		count++
+		if count == 2 {
+			break
+		}
+	}
+	assert.Equal(t, 2, count)
+}
+
+func TestNewFromSeq(t *testing.T) {
+	data := []int{1, 2, 4, 5}
+	assert.Equal(t, Create(data), NewFromSeq(slices.Values(data)))
+	assert.Equal(t, Create([]int(nil)), NewFromSeq(slices.Values([]int(nil))))
+}
+
 func TestDifference(t *testing.T) {
 	var a, b Set[int]
 

@@ -3,6 +3,7 @@ package goset
 import (
 	"encoding/json"
 	"fmt"
+	"iter"
 	"strings"
 )
 
@@ -142,11 +143,31 @@ func (set Set[T]) List() []T {
 	return list
 }
 
+// Range returns an iterator over the set's values
+func (set Set[T]) Range() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for value := range set.values {
+			if !yield(value) {
+				return
+			}
+		}
+	}
+}
+
 // Clone returns a copy of the set
 func (set Set[T]) Clone() Set[T] {
 	var clone Set[T]
 	clone.AddSet(set)
 	return clone
+}
+
+// NewFromSeq returns a new Set populated from the given sequence
+func NewFromSeq[T comparable](seq iter.Seq[T]) Set[T] {
+	var set Set[T]
+	for value := range seq {
+		set.Add(value)
+	}
+	return set
 }
 
 // Difference returns: set \ other

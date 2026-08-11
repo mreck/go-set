@@ -204,3 +204,25 @@ func TestIsSuperset(t *testing.T) {
 	assert.False(t, IsSuperset(a, b))
 	assert.True(t, IsSuperset(b, a))
 }
+
+func TestEqual(t *testing.T) {
+	var a, b Set[int]
+
+	assert.True(t, Equal(a, b))
+	assert.True(t, Equal(b, a))
+
+	a = New([]int{1, 2, 3})
+
+	assert.False(t, Equal(a, b))
+	assert.False(t, Equal(b, a))
+
+	b = New([]int{1, 2, 3, 4})
+
+	assert.False(t, Equal(a, b))
+	assert.False(t, Equal(b, a))
+
+	b = New([]int{1, 2, 3})
+
+	assert.True(t, Equal(a, b))
+	assert.True(t, Equal(b, a))
+}

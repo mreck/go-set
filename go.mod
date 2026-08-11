@@ -1,4 +1,4 @@
-module github.com/mreck/go-set
+module github.com/mreck/go-set/v2
 
 go 1.26.2
 
